@@ -75,7 +75,7 @@ describe( 'pasteHandler', () => {
 
 		delete result.attributes.caption;
 		expect( result.attributes ).toEqual( {
-			hasFixedLayout: false,
+			hasFixedLayout: true,
 			head: [
 				{
 					cells: [
@@ -115,7 +115,7 @@ describe( 'pasteHandler', () => {
 
 		delete result.attributes.caption;
 		expect( result.attributes ).toEqual( {
-			hasFixedLayout: false,
+			hasFixedLayout: true,
 			head: [
 				{
 					cells: [
