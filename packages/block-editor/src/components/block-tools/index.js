@@ -1,12 +1,11 @@
 /**
  * WordPress dependencies
  */
-import { switchToBlockType } from '@wordpress/blocks';
+import { switchToBlockType, isUnmodifiedDefaultBlock } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { Popover } from '@wordpress/components';
 import { __unstableUseShortcutEventMatch as useShortcutEventMatch } from '@wordpress/keyboard-shortcuts';
 import { useRef } from '@wordpress/element';
-import { isUnmodifiedDefaultBlock } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
