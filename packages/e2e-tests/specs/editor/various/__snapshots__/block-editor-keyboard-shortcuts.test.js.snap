@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`block editor keyboard shortcuts create a group block from the selected blocks should prevent if a group block is selected. 1`] = `
-"<!-- wp:group {\\"layout\\":{\\"type\\":\\"constrained\\"}} -->
-<div class=\\"wp-block-group\\"></div>
+"<!-- wp:group {"layout":{"type":"constrained"}} -->
+<div class="wp-block-group"></div>
 <!-- /wp:group -->"
 `;
 
 exports[`block editor keyboard shortcuts create a group block from the selected blocks should propagate properly if multiple blocks are selected. 1`] = `
-"<!-- wp:group {\\"layout\\":{\\"type\\":\\"constrained\\"}} -->
-<div class=\\"wp-block-group\\"><!-- wp:paragraph -->
+"<!-- wp:group {"layout":{"type":"constrained"}} -->
+<div class="wp-block-group"><!-- wp:paragraph -->
 <p>1st</p>
 <!-- /wp:paragraph -->
 
