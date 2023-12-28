@@ -7,7 +7,7 @@ import { useRef } from '@wordpress/element';
  * Internal dependencies
  */
 import Button from '../button';
-import type { WordPressComponentProps } from '../ui/context';
+import type { WordPressComponentProps } from '../context';
 import type { FormFileUploadProps } from './types';
 
 /**
@@ -47,6 +47,7 @@ export function FormFileUpload( {
 			{ children }
 		</Button>
 	);
+
 	return (
 		<div className="components-form-file-upload">
 			{ ui }

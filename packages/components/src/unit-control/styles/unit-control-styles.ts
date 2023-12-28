@@ -10,23 +10,13 @@ import { COLORS, CONFIG, rtl } from '../../utils';
 import NumberControl from '../../number-control';
 import { BackdropUI } from '../../input-control/styles/input-control-styles';
 import type { SelectSize } from '../types';
-import { space } from '../../ui/utils/space';
+import { space } from '../../utils/space';
 
 // Using `selectSize` instead of `size` to avoid a type conflict with the
 // `size` HTML attribute of the `select` element.
 type SelectProps = {
 	selectSize: SelectSize;
 };
-
-export const Root = styled.div`
-	box-sizing: border-box;
-	position: relative;
-
-	/* Target the InputControl's backdrop and make focus styles smoother. */
-	&&& ${ BackdropUI } {
-		transition: box-shadow 0.1s linear;
-	}
-`;
 
 // TODO: Resolve need to use &&& to increase specificity
 // https://github.com/WordPress/gutenberg/issues/18483
@@ -37,12 +27,16 @@ export const ValueInput = styled( NumberControl )`
 			display: block;
 			width: 100%;
 		}
+
+		${ BackdropUI } {
+			transition: box-shadow 0.1s linear;
+		}
 	}
 `;
 
 const baseUnitLabelStyles = ( { selectSize }: SelectProps ) => {
 	const sizes = {
-		default: css`
+		small: css`
 			box-sizing: border-box;
 			padding: 2px 1px;
 			width: 20px;
@@ -53,14 +47,14 @@ const baseUnitLabelStyles = ( { selectSize }: SelectProps ) => {
 			text-transform: uppercase;
 			text-align-last: center;
 		`,
-		large: css`
+		default: css`
 			box-sizing: border-box;
 			min-width: 24px;
 			max-width: 48px;
 			height: 24px;
 			margin-inline-end: ${ space( 2 ) };
 			padding: ${ space( 1 ) };
-			color: ${ COLORS.ui.theme };
+			color: ${ COLORS.theme.accent };
 			font-size: 13px;
 			line-height: 1;
 			text-align-last: center;
@@ -70,7 +64,7 @@ const baseUnitLabelStyles = ( { selectSize }: SelectProps ) => {
 		`,
 	};
 
-	return selectSize === '__unstable-large' ? sizes.large : sizes.default;
+	return sizes[ selectSize ];
 };
 
 export const UnitLabel = styled.div< SelectProps >`
@@ -85,10 +79,12 @@ export const UnitLabel = styled.div< SelectProps >`
 
 const unitSelectSizes = ( { selectSize = 'default' }: SelectProps ) => {
 	const sizes = {
-		default: css`
+		small: css`
 			height: 100%;
 			border: 1px solid transparent;
-			transition: box-shadow 0.1s linear, border 0.1s linear;
+			transition:
+				box-shadow 0.1s linear,
+				border 0.1s linear;
 
 			${ rtl( { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 } )() }
 
@@ -105,7 +101,7 @@ const unitSelectSizes = ( { selectSize = 'default' }: SelectProps ) => {
 				z-index: 1;
 			}
 		`,
-		large: css`
+		default: css`
 			display: flex;
 			justify-content: center;
 			align-items: center;
@@ -125,12 +121,12 @@ const unitSelectSizes = ( { selectSize = 'default' }: SelectProps ) => {
 		`,
 	};
 
-	return selectSize === '__unstable-large' ? sizes.large : sizes.default;
+	return sizes[ selectSize ];
 };
 
 export const UnitSelect = styled.select< SelectProps >`
-	// The && counteracts <select> styles in WP forms.css
-	&& {
+	// The &&& counteracts <select> styles in WP forms.css
+	&&& {
 		appearance: none;
 		background: transparent;
 		border-radius: 2px;

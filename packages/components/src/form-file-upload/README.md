@@ -38,9 +38,9 @@ Children are passed as children of `Button`.
 
 ### icon
 
-The icon to render. Supported values are: Dashicons (specified as strings), functions, WPComponent instances and `null`.
+The icon to render. Supported values are: Dashicons (specified as strings), functions, Component instances and `null`.
 
--   Type: `String|Function|WPComponent|null`
+-   Type: `String|Function|Component|null`
 -   Required: No
 -   Default: `null`
 
@@ -81,9 +81,7 @@ This can be useful when you want to force a `change` event to fire when the user
 
 ### render
 
-Optional callback function used to render the UI. If passed the component does not render any UI and calls this function to render it.
-
-This function receives an object with the property `openFileDialog`. The property is a function that when called opens the browser window to upload files.
+Optional callback function used to render the UI. If passed, the component does not render the default UI (a button) and calls this function to render it. The function receives an object with property `openFileDialog`, a function that, when called, opens the browser native file upload modal window.
 
 -   Type: `Function`
 -   Required: No

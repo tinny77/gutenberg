@@ -45,6 +45,15 @@ describe( 'getNormalizedSearchTerms', () => {
 
 	it( 'should support non-latin letters', () => {
 		expect( getNormalizedSearchTerms( 'მედია' ) ).toEqual( [ 'მედია' ] );
+		expect(
+			getNormalizedSearchTerms( '师父领进门，修行在个人。' )
+		).toEqual( [ '师父领进门', '修行在个人' ] );
+		expect(
+			getNormalizedSearchTerms( 'Бързата работа – срам за майстора.' )
+		).toEqual( [ 'бързата', 'работа', 'срам', 'за', 'маистора' ] );
+		expect(
+			getNormalizedSearchTerms( 'Cảm ơn sự giúp đỡ của bạn.' )
+		).toEqual( [ 'cam', 'on', 'su', 'giup', 'do', 'cua', 'ban' ] );
 	} );
 } );
 

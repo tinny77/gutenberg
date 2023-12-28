@@ -26,6 +26,7 @@ const MoreMenu = ( { showIconLabels } ) => {
 			toggleProps={ {
 				showTooltip: ! showIconLabels,
 				...( showIconLabels && { variant: 'tertiary' } ),
+				size: 'compact',
 			} }
 		>
 			{ ( { onClose } ) => (
@@ -36,7 +37,7 @@ const MoreMenu = ( { showIconLabels } ) => {
 							scope="core/edit-post"
 						/>
 					) }
-					<WritingMenu onClose={ onClose } />
+					<WritingMenu />
 					<ModeSwitcher />
 					<ActionItem.Slot
 						name="core/edit-post/plugin-more-menu"

@@ -3,12 +3,16 @@
  */
 import createSelector from 'rememo';
 import removeAccents from 'remove-accents';
-import { filter, get, includes, map, some } from 'lodash';
 
 /**
  * WordPress dependencies
  */
 import { pipe } from '@wordpress/compose';
+
+/**
+ * Internal dependencies
+ */
+import { getValueFromObjectPath } from './utils';
 
 /** @typedef {import('../api/registration').WPBlockVariation} WPBlockVariation */
 /** @typedef {import('../api/registration').WPBlockVariationScope} WPBlockVariationScope */
@@ -27,17 +31,6 @@ const getNormalizedBlockType = ( state, nameOrType ) =>
 	'string' === typeof nameOrType
 		? getBlockType( state, nameOrType )
 		: nameOrType;
-
-/**
- * Returns all the unprocessed block types as passed during the registration.
- *
- * @param {Object} state Data state.
- *
- * @return {Array} Unprocessed block types.
- */
-export function __experimentalGetUnprocessedBlockTypes( state ) {
-	return state.unprocessedBlockTypes;
-}
 
 /**
  * Returns all the available block types.
@@ -553,12 +546,11 @@ export function getGroupingBlockName( state ) {
  */
 export const getChildBlockNames = createSelector(
 	( state, blockName ) => {
-		return map(
-			filter( state.blockTypes, ( blockType ) => {
-				return includes( blockType.parent, blockName );
-			} ),
-			( { name } ) => name
-		);
+		return getBlockTypes( state )
+			.filter( ( blockType ) => {
+				return blockType.parent?.includes( blockName );
+			} )
+			.map( ( { name } ) => name );
 	},
 	( state ) => [ state.blockTypes ]
 );
@@ -608,7 +600,11 @@ export const getBlockSupport = (
 		return defaultSupports;
 	}
 
-	return get( blockType.supports, feature, defaultSupports );
+	return getValueFromObjectPath(
+		blockType.supports,
+		feature,
+		defaultSupports
+	);
 };
 
 /**
@@ -710,12 +706,12 @@ export function isMatchingSearchTerm( state, nameOrType, searchTerm ) {
 	const isSearchMatch = pipe( [
 		getNormalizedSearchTerm,
 		( normalizedCandidate ) =>
-			includes( normalizedCandidate, normalizedSearchTerm ),
+			normalizedCandidate.includes( normalizedSearchTerm ),
 	] );
 
 	return (
 		isSearchMatch( blockType.title ) ||
-		some( blockType.keywords, isSearchMatch ) ||
+		blockType.keywords?.some( isSearchMatch ) ||
 		isSearchMatch( blockType.category ) ||
 		( typeof blockType.description === 'string' &&
 			isSearchMatch( blockType.description ) )
@@ -792,11 +788,16 @@ export const hasChildBlocks = ( state, blockName ) => {
  *                   and false otherwise.
  */
 export const hasChildBlocksWithInserterSupport = ( state, blockName ) => {
-	return some( getChildBlockNames( state, blockName ), ( childBlockName ) => {
+	return getChildBlockNames( state, blockName ).some( ( childBlockName ) => {
 		return hasBlockSupport( state, childBlockName, 'inserter', true );
 	} );
 };
 
+/**
+ * DO-NOT-USE in production.
+ * This selector is created for internal/experimental only usage and may be
+ * removed anytime without any warning, causing breakage on any plugin or theme invoking it.
+ */
 export const __experimentalHasContentRoleAttribute = createSelector(
 	( state, blockTypeName ) => {
 		const blockType = getBlockType( state, blockTypeName );

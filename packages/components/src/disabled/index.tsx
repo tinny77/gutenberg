@@ -8,14 +8,21 @@ import { createContext } from '@wordpress/element';
  */
 import { disabledStyles } from './styles/disabled-styles';
 import type { DisabledProps } from './types';
-import type { WordPressComponentProps } from '../ui/context';
+import type { WordPressComponentProps } from '../context';
 import { useCx } from '../utils';
 
 const Context = createContext< boolean >( false );
 const { Consumer, Provider } = Context;
 
 /**
- * `Disabled` is a component which disables descendant tabbable elements and prevents pointer interaction.
+ * `Disabled` is a component which disables descendant tabbable elements and
+ * prevents pointer interaction.
+ *
+ * _Note: this component may not behave as expected in browsers that don't
+ * support the `inert` HTML attribute. We recommend adding the official WICG
+ * polyfill when using this component in your project._
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/inert
  *
  * ```jsx
  * import { Button, Disabled, TextControl } from '@wordpress/components';

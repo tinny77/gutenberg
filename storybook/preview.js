@@ -1,11 +1,23 @@
 /**
+ * External dependencies
+ */
+import {
+	ArgsTable,
+	Description,
+	Primary,
+	Stories,
+	Subtitle,
+	Title,
+} from '@storybook/blocks';
+
+/**
  * Internal dependencies
  */
 import { WithGlobalCSS } from './decorators/with-global-css';
 import { WithMarginChecker } from './decorators/with-margin-checker';
+import { WithMaxWidthWrapper } from './decorators/with-max-width-wrapper';
 import { WithRTL } from './decorators/with-rtl';
 import { WithTheme } from './decorators/with-theme';
-import './style.scss';
 
 export const globalTypes = {
 	direction: {
@@ -28,8 +40,9 @@ export const globalTypes = {
 			icon: 'paintbrush',
 			items: [
 				{ value: 'default', title: 'Default' },
-				{ value: 'modern', title: 'Modern' },
-				{ value: 'sunrise', title: 'Sunrise' },
+				{ value: 'darkBg', title: 'Dark (background)' },
+				{ value: 'lightGrayBg', title: 'Light gray (background)' },
+				{ value: 'classic', title: 'Classic (accent)' },
 			],
 		},
 	},
@@ -63,23 +76,46 @@ export const globalTypes = {
 			],
 		},
 	},
+	maxWidthWrapper: {
+		name: 'Max-Width Wrapper',
+		description: 'Wrap the component in a div with a max-width.',
+		defaultValue: 'none',
+		toolbar: {
+			icon: 'outline',
+			items: [
+				{ value: 'none', title: 'None' },
+				{ value: 'wordpress-sidebar', title: 'WP Sidebar' },
+			],
+		},
+	},
 };
 
 export const decorators = [
-	WithTheme,
 	WithGlobalCSS,
 	WithMarginChecker,
 	WithRTL,
+	WithMaxWidthWrapper,
+	WithTheme,
 ];
 
 export const parameters = {
 	controls: {
 		sort: 'requiredFirst',
 	},
-	knobs: {
-		// Knobs are deprecated, and new stories should use addon-controls.
-		// Will be enabled on a per-story basis until migration is complete.
-		disable: true,
+	docs: {
+		// Flips the order of the description and the primary component story
+		// so the component is always visible before the fold.
+		page: () => (
+			<>
+				<Title />
+				<Subtitle />
+				<Primary />
+				<Description />
+				{ /* `story="^"` enables Controls for the primary props table */ }
+				<ArgsTable story="^" />
+				<Stories includePrimary={ false } />
+			</>
+		),
 	},
 	options: {
 		storySort: {
@@ -93,4 +129,5 @@ export const parameters = {
 			],
 		},
 	},
+	sourceLinkPrefix: 'https://github.com/WordPress/gutenberg/blob/trunk/',
 };
