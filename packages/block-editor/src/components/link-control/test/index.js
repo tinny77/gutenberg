@@ -138,7 +138,7 @@ describe( 'Basic rendering', () => {
 		render( <LinkControl /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		expect( searchInput ).toBeVisible();
 	} );
@@ -147,7 +147,7 @@ describe( 'Basic rendering', () => {
 		render( <LinkControl /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		expect( searchInput ).toBeVisible();
 		// Make sure we use the ARIA 1.0 pattern with aria-owns.
@@ -170,7 +170,7 @@ describe( 'Basic rendering', () => {
 		render( <LinkControl /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, 'Hello' );
@@ -283,7 +283,7 @@ describe( 'Basic rendering', () => {
 		render( <LinkControl /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, searchTerm );
@@ -296,7 +296,7 @@ describe( 'Basic rendering', () => {
 			render( <LinkControl value={ { url: 'https://example.com' } } /> );
 
 			expect(
-				screen.queryByRole( 'combobox', { name: 'URL' } )
+				screen.queryByRole( 'combobox', { name: 'Link' } )
 			).not.toBeInTheDocument();
 		} );
 
@@ -309,7 +309,7 @@ describe( 'Basic rendering', () => {
 			);
 
 			expect(
-				screen.getByRole( 'combobox', { name: 'URL' } )
+				screen.getByRole( 'combobox', { name: 'Link' } )
 			).toBeVisible();
 		} );
 
@@ -327,7 +327,7 @@ describe( 'Basic rendering', () => {
 			await user.click( editButton );
 
 			expect(
-				screen.getByRole( 'combobox', { name: 'URL' } )
+				screen.getByRole( 'combobox', { name: 'Link' } )
 			).toBeVisible();
 
 			// If passed `forceIsEditingLink` of `false` while editing, should
@@ -340,7 +340,7 @@ describe( 'Basic rendering', () => {
 			);
 
 			expect(
-				screen.queryByRole( 'combobox', { name: 'URL' } )
+				screen.queryByRole( 'combobox', { name: 'Link' } )
 			).not.toBeInTheDocument();
 		} );
 
@@ -405,6 +405,32 @@ describe( 'Basic rendering', () => {
 
 			expect( mockOnRemove ).toHaveBeenCalled();
 		} );
+
+		it( 'should revert to "editing" mode when onRemove is triggered', async () => {
+			const user = userEvent.setup();
+			const mockOnRemove = jest.fn();
+
+			render(
+				<LinkControl
+					value={ { url: 'https://example.com' } }
+					onRemove={ mockOnRemove }
+				/>
+			);
+
+			const unLinkButton = screen.queryByRole( 'button', {
+				name: 'Unlink',
+			} );
+			expect( unLinkButton ).toBeVisible();
+
+			await user.click( unLinkButton );
+
+			expect( mockOnRemove ).toHaveBeenCalled();
+
+			// Should revert back to editing mode.
+			expect(
+				screen.getByRole( 'combobox', { name: 'Link' } )
+			).toBeVisible();
+		} );
 	} );
 } );
 
@@ -424,7 +450,7 @@ describe( 'Searching for a link', () => {
 		render( <LinkControl /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, searchTerm );
@@ -448,7 +474,9 @@ describe( 'Searching for a link', () => {
 			render( <LinkControl /> );
 
 			// Search Input UI.
-			const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+			const searchInput = screen.getByRole( 'combobox', {
+				name: 'Link',
+			} );
 
 			// Simulate searching for a term.
 			await user.type( searchInput, searchTerm );
@@ -497,7 +525,9 @@ describe( 'Searching for a link', () => {
 			render( <LinkControl /> );
 
 			// Search Input UI.
-			const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+			const searchInput = screen.getByRole( 'combobox', {
+				name: 'Link',
+			} );
 
 			// Simulate searching for a term.
 			await user.type( searchInput, searchTerm );
@@ -528,7 +558,7 @@ describe( 'Searching for a link', () => {
 		render( <LinkControl /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, searchTerm );
@@ -571,7 +601,7 @@ describe( 'Searching for a link', () => {
 		render( <LinkControl showSuggestions={ false } /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, 'anything' );
@@ -588,7 +618,7 @@ describe( 'Searching for a link', () => {
 		render( <LinkControl /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, searchTerm );
@@ -618,7 +648,7 @@ describe( 'Searching for a link', () => {
 		render( <LinkControl noURLSuggestion /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, 'couldbeurlorentitysearchterm' );
@@ -648,7 +678,9 @@ describe( 'Manual link entry', () => {
 			render( <LinkControl /> );
 
 			// Search Input UI.
-			const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+			const searchInput = screen.getByRole( 'combobox', {
+				name: 'Link',
+			} );
 
 			// Simulate searching for a term.
 			await user.type( searchInput, searchTerm );
@@ -683,18 +715,8 @@ describe( 'Manual link entry', () => {
 
 				// Search Input UI.
 				const searchInput = screen.getByRole( 'combobox', {
-					name: 'URL',
+					name: 'Link',
 				} );
-
-				let submitButton = screen.getByRole( 'button', {
-					name: 'Save',
-				} );
-
-				expect( submitButton ).toHaveAttribute(
-					'aria-disabled',
-					'true'
-				);
-				expect( submitButton ).toBeVisible();
 
 				if ( searchString.length ) {
 					// Simulate searching for a term.
@@ -707,102 +729,71 @@ describe( 'Manual link entry', () => {
 				// Attempt to submit the empty search value in the input.
 				await user.keyboard( '[Enter]' );
 
-				submitButton = screen.getByRole( 'button', {
-					name: 'Save',
-				} );
-
-				// Verify the UI hasn't allowed submission.
+				// Verify the UI hasn't allowed submission because
+				// the search input is still visible.
 				expect( searchInput ).toBeVisible();
-				expect( submitButton ).toHaveAttribute(
-					'aria-disabled',
-					'true'
-				);
-				expect( submitButton ).toBeVisible();
 			}
 		);
 
 		it.each( testTable )(
-			'should not allow creation of links %s via the UI "submit" button',
+			'should not allow editing of links to a new link %s via the UI "submit" button',
 			async ( _desc, searchString ) => {
 				const user = userEvent.setup();
 
-				render( <LinkControl /> );
+				render(
+					<LinkControl
+						value={ fauxEntitySuggestions[ 0 ] }
+						forceIsEditingLink
+					/>
+				);
 
 				// Search Input UI.
 				const searchInput = screen.getByRole( 'combobox', {
-					name: 'URL',
+					name: 'Link',
 				} );
 
-				let submitButton = screen.queryByRole( 'button', {
-					name: 'Save',
-				} );
+				// Remove the existing link.
+				await user.clear( searchInput );
 
-				expect( submitButton ).toHaveAttribute(
-					'aria-disabled',
-					'true'
-				);
-				expect( submitButton ).toBeVisible();
-
-				// Simulate searching for a term.
 				if ( searchString.length ) {
-					// Simulate searching for a term.
 					await user.type( searchInput, searchString );
 				} else {
 					// Simulate clearing the search term.
 					await user.clear( searchInput );
 				}
 
-				// Attempt to submit the empty search value in the input.
-				await user.click( submitButton );
-
-				submitButton = screen.queryByRole( 'button', {
+				const submitButton = screen.queryByRole( 'button', {
 					name: 'Save',
 				} );
 
-				// Verify the UI hasn't allowed submission.
-				expect( searchInput ).toBeVisible();
+				// Verify the submission UI is disabled.
+				expect( submitButton ).toBeVisible();
 				expect( submitButton ).toHaveAttribute(
 					'aria-disabled',
 					'true'
 				);
-				expect( submitButton ).toBeVisible();
+
+				// Attempt to submit the empty search value in the input.
+				await user.click( submitButton );
+
+				// Verify the UI hasn't allowed submission because
+				// the search input is still visible.
+				expect( searchInput ).toBeVisible();
 			}
 		);
 	} );
 
 	describe( 'Handling cancellation', () => {
-		it( 'should allow cancellation of the link creation process and reset any entered values', async () => {
-			const user = userEvent.setup();
+		it( 'should not show cancellation button during link creation', async () => {
 			const mockOnRemove = jest.fn();
-			const mockOnCancel = jest.fn();
 
 			render( <LinkControl onRemove={ mockOnRemove } /> );
-
-			// Search Input UI.
-			const searchInput = screen.getByRole( 'combobox', {
-				name: 'URL',
-			} );
 
 			const cancelButton = screen.queryByRole( 'button', {
 				name: 'Cancel',
 			} );
 
-			expect( cancelButton ).toBeEnabled();
-			expect( cancelButton ).toBeVisible();
-
-			// Simulate adding a link for a term.
-			await user.type( searchInput, 'https://www.wordpress.org' );
-
-			// Attempt to submit the empty search value in the input.
-			await user.click( cancelButton );
-
-			// Verify the consumer can handle the cancellation.
-			expect( mockOnRemove ).toHaveBeenCalled();
-
-			// Ensure optional callback is not called.
-			expect( mockOnCancel ).not.toHaveBeenCalled();
-
-			expect( searchInput ).toHaveValue( '' );
+			expect( cancelButton ).not.toBeInTheDocument();
 		} );
 
 		it( 'should allow cancellation of the link editing process and reset any entered values', async () => {
@@ -839,7 +830,7 @@ describe( 'Manual link entry', () => {
 			await toggleSettingsDrawer( user );
 
 			let searchInput = screen.getByRole( 'combobox', {
-				name: 'URL',
+				name: 'Link',
 			} );
 
 			let textInput = screen.getByRole( 'textbox', {
@@ -874,7 +865,7 @@ describe( 'Manual link entry', () => {
 
 			// Re-query the inputs as they have been replaced.
 			searchInput = screen.getByRole( 'combobox', {
-				name: 'URL',
+				name: 'Link',
 			} );
 
 			textInput = screen.getByRole( 'textbox', {
@@ -890,7 +881,13 @@ describe( 'Manual link entry', () => {
 			const user = userEvent.setup();
 			const mockOnCancel = jest.fn();
 
-			render( <LinkControl onCancel={ mockOnCancel } /> );
+			render(
+				<LinkControl
+					value={ fauxEntitySuggestions[ 0 ] }
+					onCancel={ mockOnCancel }
+					forceIsEditingLink
+				/>
+			);
 
 			const cancelButton = screen.queryByRole( 'button', {
 				name: 'Cancel',
@@ -916,7 +913,7 @@ describe( 'Manual link entry', () => {
 
 				// Search Input UI.
 				const searchInput = screen.getByRole( 'combobox', {
-					name: 'URL',
+					name: 'Link',
 				} );
 
 				// Simulate searching for a term.
@@ -939,6 +936,92 @@ describe( 'Manual link entry', () => {
 	} );
 } );
 
+describe( 'Link submission', () => {
+	it( 'should show a submit button when creating a link', async () => {
+		const user = userEvent.setup();
+
+		const LinkControlConsumer = () => {
+			const [ link, setLink ] = useState( {} );
+
+			return <LinkControl value={ link } onChange={ setLink } />;
+		};
+
+		render( <LinkControlConsumer /> );
+
+		const searchInput = screen.getByRole( 'combobox', {
+			name: 'Link',
+		} );
+
+		const submitButton = screen.getByRole( 'button', {
+			name: 'Submit',
+		} );
+
+		expect( submitButton ).toBeVisible();
+		expect( submitButton ).toHaveAttribute( 'aria-disabled', 'true' );
+
+		// Click the button and check it's not possible to prematurely submit the link.
+		await user.click( submitButton );
+
+		expect( searchInput ).toBeVisible();
+		expect( submitButton ).toBeVisible();
+
+		await user.type( searchInput, 'https://wordpress.org' );
+
+		expect( submitButton ).toHaveAttribute( 'aria-disabled', 'false' );
+	} );
+
+	it( 'should show a submit button when editing a link', async () => {
+		const user = userEvent.setup();
+
+		const LinkControlConsumer = () => {
+			const [ link, setLink ] = useState( fauxEntitySuggestions[ 0 ] );
+
+			return (
+				<LinkControl
+					forceIsEditingLink
+					value={ link }
+					onChange={ setLink }
+				/>
+			);
+		};
+
+		render( <LinkControlConsumer /> );
+
+		const searchInput = screen.getByRole( 'combobox', {
+			name: 'Link',
+		} );
+
+		const createSubmitButton = screen.queryByRole( 'button', {
+			name: 'Submit',
+		} );
+
+		// Check the submit button for "creation" of links is not displayed.
+		expect( createSubmitButton ).not.toBeInTheDocument();
+
+		const editSubmitButton = screen.getByRole( 'button', {
+			name: 'Save',
+		} );
+
+		expect( editSubmitButton ).toBeVisible();
+		expect( editSubmitButton ).toHaveAttribute( 'aria-disabled', 'true' );
+
+		// Click the button and check it's not possible to prematurely submit the link.
+		await user.click( editSubmitButton );
+
+		expect( searchInput ).toBeVisible();
+		expect( editSubmitButton ).toBeVisible();
+
+		await user.type( searchInput, '#appendtolinktext' );
+
+		// As typing triggers the search handler, we need to wait for the
+		// search results to be returned. We can use the presence of the
+		// search results listbox as a proxy for this.
+		expect( await screen.findByRole( 'listbox' ) ).toBeVisible();
+
+		expect( editSubmitButton ).toHaveAttribute( 'aria-disabled', 'false' );
+	} );
+} );
+
 describe( 'Default search suggestions', () => {
 	it( 'should display a list of initial search suggestions when there is no search value or suggestions', async () => {
 		render( <LinkControl showInitialSuggestions /> );
@@ -952,7 +1035,7 @@ describe( 'Default search suggestions', () => {
 		// Verify input has no value has default suggestions should only show
 		// when this does not have a value.
 		// Search Input UI.
-		expect( screen.getByRole( 'combobox', { name: 'URL' } ) ).toHaveValue(
+		expect( screen.getByRole( 'combobox', { name: 'Link' } ) ).toHaveValue(
 			''
 		);
 
@@ -981,7 +1064,7 @@ describe( 'Default search suggestions', () => {
 		} );
 		await user.click( currentLinkBtn );
 
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Search input is set to the URL value.
 		expect( searchInput ).toHaveValue( initialValue.url );
@@ -1003,7 +1086,7 @@ describe( 'Default search suggestions', () => {
 		render( <LinkControl showInitialSuggestions /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, searchTerm );
@@ -1041,7 +1124,7 @@ describe( 'Default search suggestions', () => {
 
 		render( <LinkControl showInitialSuggestions /> );
 
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		const searchResultsField = screen.queryByRole( 'listbox', {
 			name: 'Suggestions',
@@ -1099,7 +1182,9 @@ describe( 'Creating Entities (eg: Posts, Pages)', () => {
 			render( <LinkControlConsumer /> );
 
 			// Search Input UI.
-			const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+			const searchInput = screen.getByRole( 'combobox', {
+				name: 'Link',
+			} );
 
 			// Simulate searching for a term.
 			await user.type( searchInput, entityNameText );
@@ -1133,9 +1218,8 @@ describe( 'Creating Entities (eg: Posts, Pages)', () => {
 			// Resolve the `createSuggestion` promise.
 			resolver();
 
-			const currentLink = await screen.findByLabelText(
-				'Currently selected'
-			);
+			const currentLink =
+				await screen.findByLabelText( 'Currently selected' );
 
 			expect( currentLink ).toHaveTextContent( entityNameText );
 			expect( currentLink ).toHaveTextContent( '/?p=123' );
@@ -1166,7 +1250,7 @@ describe( 'Creating Entities (eg: Posts, Pages)', () => {
 		render( <LinkControlConsumer /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, 'Some new page to create' );
@@ -1215,7 +1299,7 @@ describe( 'Creating Entities (eg: Posts, Pages)', () => {
 		render( <LinkControlConsumer /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, entityNameText );
@@ -1258,7 +1342,7 @@ describe( 'Creating Entities (eg: Posts, Pages)', () => {
 		render( <LinkControlConsumer /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, entityNameText );
@@ -1282,7 +1366,7 @@ describe( 'Creating Entities (eg: Posts, Pages)', () => {
 
 				// Search Input UI.
 				const searchInput = screen.getByRole( 'combobox', {
-					name: 'URL',
+					name: 'Link',
 				} );
 
 				const searchResultsField = screen.queryByRole( 'listbox' );
@@ -1302,7 +1386,9 @@ describe( 'Creating Entities (eg: Posts, Pages)', () => {
 			);
 
 			// Search Input UI.
-			const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+			const searchInput = screen.getByRole( 'combobox', {
+				name: 'Link',
+			} );
 
 			const searchResultsField = screen.queryByRole( 'listbox' );
 
@@ -1325,7 +1411,7 @@ describe( 'Creating Entities (eg: Posts, Pages)', () => {
 
 				// Search Input UI.
 				const searchInput = screen.getByRole( 'combobox', {
-					name: 'URL',
+					name: 'Link',
 				} );
 
 				// Simulate searching for a term.
@@ -1359,7 +1445,7 @@ describe( 'Creating Entities (eg: Posts, Pages)', () => {
 			render( <LinkControl createSuggestion={ createSuggestion } /> );
 
 			// Search Input UI.
-			searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+			searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 			// Simulate searching for a term.
 			await user.type( searchInput, searchText );
@@ -1374,7 +1460,7 @@ describe( 'Creating Entities (eg: Posts, Pages)', () => {
 
 			await user.click( createButton );
 
-			searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+			searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 			const errorNotice = screen.getAllByText(
 				'API response returned invalid entity.'
@@ -1447,7 +1533,7 @@ describe( 'Selecting links', () => {
 		// Simulate searching for a term.
 		await user.click( currentLinkBtn );
 
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 		currentLinkUI = screen.queryByLabelText( 'Currently selected' );
 
 		// We should be back to showing the search input.
@@ -1488,7 +1574,7 @@ describe( 'Selecting links', () => {
 
 				// Search Input UI.
 				const searchInput = screen.getByRole( 'combobox', {
-					name: 'URL',
+					name: 'Link',
 				} );
 
 				// Simulate searching for a term.
@@ -1550,7 +1636,7 @@ describe( 'Selecting links', () => {
 
 				// Search Input UI.
 				const searchInput = screen.getByRole( 'combobox', {
-					name: 'URL',
+					name: 'Link',
 				} );
 
 				// Simulate searching for a term.
@@ -1639,7 +1725,9 @@ describe( 'Selecting links', () => {
 			).toBeVisible();
 
 			// Search Input UI.
-			const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+			const searchInput = screen.getByRole( 'combobox', {
+				name: 'Link',
+			} );
 
 			// Step down into the search results, highlighting the first result item.
 			triggerArrowDown( searchInput );
@@ -1695,7 +1783,9 @@ describe( 'Selecting links', () => {
 			render( <LinkControl value={ selectedLink } forceIsEditingLink /> );
 
 			// focus the search input
-			const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+			const searchInput = screen.getByRole( 'combobox', {
+				name: 'Link',
+			} );
 
 			fireEvent.focus( searchInput );
 
@@ -1726,7 +1816,67 @@ describe( 'Selecting links', () => {
 } );
 
 describe( 'Addition Settings UI', () => {
-	it( 'should not show a means to toggle the link settings when not editing a link', async () => {
+	it( 'should allow toggling the "Opens in new tab" setting control (only) on the link preview', async () => {
+		const user = userEvent.setup();
+		const selectedLink = fauxEntitySuggestions[ 0 ];
+		const mockOnChange = jest.fn();
+
+		const customSettings = [
+			{
+				id: 'opensInNewTab',
+				title: 'Open in new tab',
+			},
+			{
+				id: 'noFollow',
+				title: 'No follow',
+			},
+		];
+
+		const LinkControlConsumer = () => {
+			const [ link, setLink ] = useState( selectedLink );
+
+			return (
+				<LinkControl
+					value={ link }
+					settings={ customSettings }
+					onChange={ ( newVal ) => {
+						mockOnChange( newVal );
+						setLink( newVal );
+					} }
+				/>
+			);
+		};
+
+		render( <LinkControlConsumer /> );
+
+		const opensInNewTabField = screen.queryByRole( 'checkbox', {
+			name: 'Open in new tab',
+			checked: false,
+		} );
+
+		expect( opensInNewTabField ).toBeInTheDocument();
+
+		// No matter which settings are passed in only the `Opens in new tab`
+		// setting should be shown on the link preview (non-editing) state.
+		const noFollowField = screen.queryByRole( 'checkbox', {
+			name: 'No follow',
+		} );
+		expect( noFollowField ).not.toBeInTheDocument();
+
+		// Check that the link value is updated immediately upon checking
+		// the checkbox.
+		await user.click( opensInNewTabField );
+
+		expect( opensInNewTabField ).toBeChecked();
+
+		expect( mockOnChange ).toHaveBeenCalledTimes( 1 );
+		expect( mockOnChange ).toHaveBeenCalledWith( {
+			...selectedLink,
+			opensInNewTab: true,
+		} );
+	} );
+
+	it( 'should hide advanced link settings and toggle when not editing a link', async () => {
 		const selectedLink = fauxEntitySuggestions[ 0 ];
 
 		const LinkControlConsumer = () => {
@@ -1737,14 +1887,12 @@ describe( 'Addition Settings UI', () => {
 
 		render( <LinkControlConsumer /> );
 
-		const settingsToggle = screen.queryByRole( 'button', {
-			name: 'Link Settings',
-			ariaControls: 'link-settings-1',
-		} );
+		const settingsToggle = getSettingsDrawerToggle();
 
 		expect( settingsToggle ).not.toBeInTheDocument();
 	} );
-	it( 'should provides a means to toggle the link settings', async () => {
+
+	it( 'should provides a means to toggle the advanced link settings when editing a link', async () => {
 		const selectedLink = fauxEntitySuggestions[ 0 ];
 
 		const LinkControlConsumer = () => {
@@ -1757,10 +1905,7 @@ describe( 'Addition Settings UI', () => {
 
 		const user = userEvent.setup();
 
-		const settingsToggle = screen.queryByRole( 'button', {
-			name: 'Link Settings',
-			ariaControls: 'link-settings-1',
-		} );
+		const settingsToggle = getSettingsDrawerToggle();
 
 		expect( settingsToggle ).toHaveAttribute( 'aria-expanded', 'false' );
 
@@ -1782,7 +1927,7 @@ describe( 'Addition Settings UI', () => {
 		expect( newTabSettingInput ).not.toBeVisible();
 	} );
 
-	it( 'should display "New Tab" setting (in "off" mode) by default when a link is selected', async () => {
+	it( 'should display "New Tab" setting (in "off" mode) by default when a link is edited', async () => {
 		const selectedLink = fauxEntitySuggestions[ 0 ];
 		const expectedSettingText = 'Open in new tab';
 
@@ -1814,7 +1959,7 @@ describe( 'Addition Settings UI', () => {
 
 		const customSettings = [
 			{
-				id: 'newTab',
+				id: 'opensInNewTab',
 				title: 'Open in new tab',
 			},
 			{
@@ -1911,6 +2056,25 @@ describe( 'Addition Settings UI', () => {
 			} )
 		);
 	} );
+
+	it( 'should show tooltip with full URL alongside filtered display', async () => {
+		const user = userEvent.setup();
+		const url =
+			'http://www.wordpress.org/wp-content/uploads/a-document.pdf';
+		render( <LinkControl value={ { url } } /> );
+
+		const link = screen.getByRole( 'link' );
+
+		expect( link ).toHaveTextContent( 'a-document.pdf' );
+
+		await user.hover( link );
+
+		expect( await screen.findByRole( 'tooltip' ) ).toHaveTextContent( url );
+
+		await user.unhover( link );
+
+		expect( screen.queryByRole( 'tooltip' ) ).not.toBeInTheDocument();
+	} );
 } );
 
 describe( 'Post types', () => {
@@ -1921,7 +2085,7 @@ describe( 'Post types', () => {
 		render( <LinkControl /> );
 
 		// Search Input UI.
-		const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+		const searchInput = screen.getByRole( 'combobox', { name: 'Link' } );
 
 		// Simulate searching for a term.
 		await user.type( searchInput, searchTerm );
@@ -1948,7 +2112,9 @@ describe( 'Post types', () => {
 			render( <LinkControl suggestionsQuery={ { type: postType } } /> );
 
 			// Search Input UI.
-			const searchInput = screen.getByRole( 'combobox', { name: 'URL' } );
+			const searchInput = screen.getByRole( 'combobox', {
+				name: 'Link',
+			} );
 
 			// Simulate searching for a term.
 			await user.type( searchInput, searchTerm );
@@ -1974,7 +2140,7 @@ describe( 'Post types', () => {
 describe( 'Rich link previews', () => {
 	const selectedLink = {
 		id: '1',
-		title: 'Wordpress.org', // Customize this for differentiation in assertions.
+		title: 'WordPress.org', // Customize this for differentiation in assertions.
 		url: 'https://www.wordpress.org',
 		type: 'URL',
 	};
@@ -2406,10 +2572,14 @@ describe( 'Controlling link title text', () => {
 	} );
 } );
 
-async function toggleSettingsDrawer( user ) {
-	const settingsToggle = screen.queryByRole( 'button', {
-		name: 'Link Settings',
+function getSettingsDrawerToggle() {
+	return screen.queryByRole( 'button', {
+		name: 'Advanced',
 	} );
+}
+
+async function toggleSettingsDrawer( user ) {
+	const settingsToggle = getSettingsDrawerToggle();
 
 	await user.click( settingsToggle );
 }

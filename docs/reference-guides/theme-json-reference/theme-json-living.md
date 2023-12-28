@@ -31,6 +31,7 @@ Code editors can pick up the schema and can provide helpful hints and suggestion
 
 Setting that enables the following UI tools:
 
+- background: backgroundImage
 - border: color, radius, style, width
 - color: link
 - dimensions: minHeight
@@ -94,6 +95,18 @@ Settings related to colors.
 | link | boolean | false |  |
 | palette | array |  | color, name, slug |
 | text | boolean | true |  |
+| heading | boolean | true |  |
+| button | boolean | true |  |
+
+---
+
+### background
+
+Settings related to background.
+
+| Property  | Type   | Default | Props  |
+| ---       | ---    | ---    |---   |
+| backgroundImage | boolean | false |  |
 
 ---
 
@@ -115,6 +128,19 @@ Settings related to layout.
 | ---       | ---    | ---    |---   |
 | contentSize | string |  |  |
 | wideSize | string |  |  |
+| allowEditing | boolean | true |  |
+| allowCustomContentAndWideSize | boolean | true |  |
+
+---
+
+### lightbox
+
+Settings related to the lightbox.
+
+| Property  | Type   | Default | Props  |
+| ---       | ---    | ---    |---   |
+| enabled | boolean |  |  |
+| allowEditing | boolean |  |  |
 
 ---
 
@@ -158,10 +184,11 @@ Settings related to typography.
 | lineHeight | boolean | false |  |
 | textColumns | boolean | false |  |
 | textDecoration | boolean | true |  |
+| writingMode | boolean | false |  |
 | textTransform | boolean | true |  |
 | dropCap | boolean | true |  |
 | fontSizes | array |  | fluid, name, size, slug |
-| fontFamilies | array |  | fontFace, fontFamily, name, slug |
+| fontFamilies | array |  | fontFace, fontFamily, name, preview, slug |
 
 ---
 
@@ -239,6 +266,7 @@ Typography styles.
 | lineHeight | string, object |  |
 | textColumns | string |  |
 | textDecoration | string, object |  |
+| writingMode | string, object |  |
 | textTransform | string, object |  |
 
 ---
