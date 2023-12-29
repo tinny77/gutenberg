@@ -22,7 +22,9 @@ import {
 	getSizeConfig,
 } from './styles/input-control-styles';
 import type { InputBaseProps, LabelPosition } from './types';
-import { ContextSystemProvider, WordPressComponentProps } from '../ui/context';
+import type { WordPressComponentProps } from '../context';
+import { ContextSystemProvider } from '../context';
+import { useDeprecated36pxDefaultSizeProp } from '../utils/use-deprecated-props';
 
 function useUniqueId( idProp?: string ) {
 	const instanceId = useInstanceId( InputBase );
@@ -33,14 +35,21 @@ function useUniqueId( idProp?: string ) {
 
 // Adapter to map props for the new ui/flex component.
 function getUIFlexProps( labelPosition?: LabelPosition ) {
-	const props: { direction?: string; gap?: number; justify?: string } = {};
+	const props: {
+		direction?: string;
+		gap?: number;
+		justify?: string;
+		expanded?: boolean;
+	} = {};
 	switch ( labelPosition ) {
 		case 'top':
 			props.direction = 'column';
+			props.expanded = false;
 			props.gap = 0;
 			break;
 		case 'bottom':
 			props.direction = 'column-reverse';
+			props.expanded = false;
 			props.gap = 0;
 			break;
 		case 'edge':
@@ -52,8 +61,11 @@ function getUIFlexProps( labelPosition?: LabelPosition ) {
 }
 
 export function InputBase(
-	{
-		__next36pxDefaultSize,
+	props: WordPressComponentProps< InputBaseProps, 'div' >,
+	ref: ForwardedRef< HTMLDivElement >
+) {
+	const {
+		__next40pxDefaultSize,
 		__unstableInputWidth,
 		children,
 		className,
@@ -66,16 +78,19 @@ export function InputBase(
 		prefix,
 		size = 'default',
 		suffix,
-		...props
-	}: WordPressComponentProps< InputBaseProps, 'div' >,
-	ref: ForwardedRef< HTMLDivElement >
-) {
+		...restProps
+	} = useDeprecated36pxDefaultSizeProp(
+		props,
+		'wp.components.InputBase',
+		'6.4'
+	);
+
 	const id = useUniqueId( idProp );
 	const hideLabel = hideLabelFromVision || ! label;
 
 	const { paddingLeft, paddingRight } = getSizeConfig( {
 		inputSize: size,
-		__next36pxDefaultSize,
+		__next40pxDefaultSize,
 	} );
 	const prefixSuffixContextValue = useMemo( () => {
 		return {
@@ -87,7 +102,7 @@ export function InputBase(
 	return (
 		// @ts-expect-error The `direction` prop from Flex (FlexDirection) conflicts with legacy SVGAttributes `direction` (string) that come from React intrinsic prop definitions.
 		<Root
-			{ ...props }
+			{ ...restProps }
 			{ ...getUIFlexProps( labelPosition ) }
 			className={ className }
 			gap={ 2 }

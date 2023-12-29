@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { __unstableStripHTML as stripHTML } from '@wordpress/dom';
 import { Popover, Button } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import {
@@ -8,8 +9,11 @@ import {
 	BlockIcon,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { createInterpolateElement } from '@wordpress/element';
-import { store as coreStore } from '@wordpress/core-data';
+import { createInterpolateElement, useMemo } from '@wordpress/element';
+import {
+	store as coreStore,
+	useResourcePermissions,
+} from '@wordpress/core-data';
 import { decodeEntities } from '@wordpress/html-entities';
 import { switchToBlockType } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -40,15 +44,23 @@ export function getSuggestionsQuery( type, kind ) {
 			if ( kind === 'post-type' ) {
 				return { type: 'post', subtype: type };
 			}
-			return {};
+			return {
+				// for custom link which has no type
+				// always show pages as initial suggestions
+				initialSuggestionsSearchOptions: {
+					type: 'post',
+					subtype: 'page',
+					perPage: 20,
+				},
+			};
 	}
 }
 
 /**
  * Add transforms to Link Control
  *
- * @param {Object} props					Component props.
- * @param {string} props.clientId			Block client ID.
+ * @param {Object} props          Component props.
+ * @param {string} props.clientId Block client ID.
  */
 function LinkControlTransforms( { clientId } ) {
 	const { getBlock, blockTransforms } = useSelect(
@@ -73,15 +85,21 @@ function LinkControlTransforms( { clientId } ) {
 	const { replaceBlock } = useDispatch( blockEditorStore );
 
 	const featuredBlocks = [
+		'core/page-list',
 		'core/site-logo',
 		'core/social-links',
 		'core/search',
 	];
+
 	const transforms = blockTransforms.filter( ( item ) => {
 		return featuredBlocks.includes( item.name );
 	} );
 
 	if ( ! transforms?.length ) {
+		return null;
+	}
+
+	if ( ! clientId ) {
 		return null;
 	}
 
@@ -118,9 +136,11 @@ function LinkControlTransforms( { clientId } ) {
 
 export function LinkUI( props ) {
 	const { saveEntityRecord } = useDispatch( coreStore );
+	const pagesPermissions = useResourcePermissions( 'pages' );
+	const postsPermissions = useResourcePermissions( 'posts' );
 
 	async function handleCreate( pageTitle ) {
-		const postType = props.linkAttributes.type || 'page';
+		const postType = props.link.type || 'page';
 
 		const page = await saveEntityRecord( 'postType', postType, {
 			title: pageTitle,
@@ -146,6 +166,26 @@ export function LinkUI( props ) {
 		};
 	}
 
+	const { label, url, opensInNewTab, type, kind } = props.link;
+
+	let userCanCreate = false;
+	if ( ! type || type === 'page' ) {
+		userCanCreate = pagesPermissions.canCreate;
+	} else if ( type === 'post' ) {
+		userCanCreate = postsPermissions.canCreate;
+	}
+
+	// Memoize link value to avoid overriding the LinkControl's internal state.
+	// This is a temporary fix. See https://github.com/WordPress/gutenberg/issues/50976#issuecomment-1568226407.
+	const link = useMemo(
+		() => ( {
+			url,
+			opensInNewTab,
+			title: label && stripHTML( label ),
+		} ),
+		[ label, opensInNewTab, url ]
+	);
+
 	return (
 		<Popover
 			placement="bottom"
@@ -156,15 +196,14 @@ export function LinkUI( props ) {
 			<LinkControl
 				hasTextControl
 				hasRichPreviews
-				className="wp-block-navigation-link__inline-link-input"
-				value={ props.value }
+				value={ link }
 				showInitialSuggestions={ true }
-				withCreateSuggestion={ props.hasCreateSuggestion }
+				withCreateSuggestion={ userCanCreate }
 				createSuggestion={ handleCreate }
 				createSuggestionButtonText={ ( searchTerm ) => {
 					let format;
 
-					if ( props.linkAttributes.type === 'post' ) {
+					if ( type === 'post' ) {
 						/* translators: %s: search term. */
 						format = __( 'Create draft post: <mark>%s</mark>' );
 					} else {
@@ -179,16 +218,14 @@ export function LinkUI( props ) {
 						}
 					);
 				} }
-				noDirectEntry={ !! props.linkAttributes.type }
-				noURLSuggestion={ !! props.linkAttributes.type }
-				suggestionsQuery={ getSuggestionsQuery(
-					props.linkAttributes.type,
-					props.linkAttributes.kind
-				) }
+				noDirectEntry={ !! type }
+				noURLSuggestion={ !! type }
+				suggestionsQuery={ getSuggestionsQuery( type, kind ) }
 				onChange={ props.onChange }
 				onRemove={ props.onRemove }
+				onCancel={ props.onCancel }
 				renderControlBottom={
-					! props.linkAttributes.url
+					! url
 						? () => (
 								<LinkControlTransforms
 									clientId={ props.clientId }

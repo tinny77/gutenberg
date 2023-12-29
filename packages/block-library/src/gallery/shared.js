@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { get } from 'lodash';
-
-/**
  * WordPress dependencies
  */
 import { Platform } from '@wordpress/element';
@@ -20,13 +15,13 @@ export const pickRelevantMediaFiles = ( image, sizeSlug = 'large' ) => {
 	);
 
 	imageProps.url =
-		get( image, [ 'sizes', sizeSlug, 'url' ] ) ||
-		get( image, [ 'media_details', 'sizes', sizeSlug, 'source_url' ] ) ||
-		image.url ||
-		image.source_url;
+		image?.sizes?.[ sizeSlug ]?.url ||
+		image?.media_details?.sizes?.[ sizeSlug ]?.source_url ||
+		image?.url ||
+		image?.source_url;
 	const fullUrl =
-		get( image, [ 'sizes', 'full', 'url' ] ) ||
-		get( image, [ 'media_details', 'sizes', 'full', 'source_url' ] );
+		image?.sizes?.full?.url ||
+		image?.media_details?.sizes?.full?.source_url;
 	if ( fullUrl ) {
 		imageProps.fullUrl = fullUrl;
 	}
@@ -49,16 +44,7 @@ function getGalleryBlockV2Enabled() {
  * can be removed when minimum supported WP version >=5.9.
  */
 export function isGalleryV2Enabled() {
-	// The logic for the native version is located in a different if statement
-	// due to a lint rule that prohibits a single conditional combining
-	// `process.env.IS_GUTENBERG_PLUGIN` with a native platform check.
 	if ( Platform.isNative ) {
-		return getGalleryBlockV2Enabled();
-	}
-
-	// Only run the Gallery version compat check if the plugin is running, otherwise
-	// assume we are in 5.9 core and enable by default.
-	if ( process.env.IS_GUTENBERG_PLUGIN ) {
 		return getGalleryBlockV2Enabled();
 	}
 
