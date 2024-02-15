@@ -107,29 +107,31 @@ function shimAttributeSource( settings ) {
 	return settings;
 }
 
-addFilter(
-	'blocks.registerBlockType',
-	'core/editor/custom-sources-backwards-compatibility/shim-attribute-source',
-	shimAttributeSource
-);
+export default function init() {
+	addFilter(
+		'blocks.registerBlockType',
+		'core/editor/custom-sources-backwards-compatibility/shim-attribute-source',
+		shimAttributeSource
+	);
 
-// Add the context to all blocks.
-addFilter(
-	'blocks.registerBlockType',
-	'core/block-bindings-ui',
-	( settings, name ) => {
-		if ( ! ( name in BLOCK_BINDINGS_ALLOWED_BLOCKS ) ) {
+	// Add the context to all blocks.
+	addFilter(
+		'blocks.registerBlockType',
+		'core/block-bindings-ui',
+		( settings, name ) => {
+			if ( ! ( name in BLOCK_BINDINGS_ALLOWED_BLOCKS ) ) {
+				return settings;
+			}
+			const contextItems = [ 'postId', 'postType', 'queryId' ];
+			const usesContextArray = settings.usesContext;
+			const oldUsesContextArray = new Set( usesContextArray );
+			contextItems.forEach( ( item ) => {
+				if ( ! oldUsesContextArray.has( item ) ) {
+					usesContextArray.push( item );
+				}
+			} );
+			settings.usesContext = usesContextArray;
 			return settings;
 		}
-		const contextItems = [ 'postId', 'postType', 'queryId' ];
-		const usesContextArray = settings.usesContext;
-		const oldUsesContextArray = new Set( usesContextArray );
-		contextItems.forEach( ( item ) => {
-			if ( ! oldUsesContextArray.has( item ) ) {
-				usesContextArray.push( item );
-			}
-		} );
-		settings.usesContext = usesContextArray;
-		return settings;
-	}
-);
+	);
+}
