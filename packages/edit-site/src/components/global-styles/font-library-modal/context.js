@@ -372,6 +372,12 @@ function FontLibraryProvider( { children } ) {
 			...fontFamilies,
 			[ font.source ]: newCustomFonts,
 		} );
+
+		if ( font.fontFace ) {
+			font.fontFace.forEach( ( face ) => {
+				unloadFontFaceInBrowser( face, 'all' );
+			} );
+		}
 	};
 
 	const activateCustomFontFamilies = ( fontsToAdd ) => {
