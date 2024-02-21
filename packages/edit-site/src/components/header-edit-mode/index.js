@@ -85,8 +85,6 @@ export default function HeaderEditMode() {
 
 	const isFocusMode = FOCUSABLE_ENTITIES.includes( templateType );
 
-	const isZoomedOutView = blockEditorMode === 'zoom-out';
-
 	const [ isBlockToolsCollapsed, setIsBlockToolsCollapsed ] =
 		useState( true );
 
@@ -197,7 +195,7 @@ export default function HeaderEditMode() {
 						<div
 							className={ classnames(
 								'edit-site-header-edit-mode__preview-options',
-								{ 'is-zoomed-out': isZoomedOutView }
+								{ 'is-zoomed-out': isZoomOutMode }
 							) }
 						>
 							<PreviewDropdown
