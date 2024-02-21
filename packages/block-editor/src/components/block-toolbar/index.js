@@ -60,6 +60,7 @@ export function PrivateBlockToolbar( {
 		blockClientIds,
 		isDefaultEditingMode,
 		blockType,
+		toolbarKey,
 		shouldShowVisualToolbar,
 		showParentSelector,
 	} = useSelect( ( select ) => {
@@ -97,6 +98,7 @@ export function PrivateBlockToolbar( {
 
 			shouldShowVisualToolbar: isValid && isVisual,
 			rootClientId: blockRootClientId,
+			toolbarKey: `${ selectedBlockClientId }${ firstParentClientId }`,
 			showParentSelector:
 				parentBlockType &&
 				getBlockEditingMode( firstParentClientId ) === 'default' &&
@@ -159,7 +161,7 @@ export function PrivateBlockToolbar( {
 			__experimentalOnIndexChange={ __experimentalOnIndexChange }
 			// Resets the index whenever the active block changes so
 			// this is not persisted. See https://github.com/WordPress/gutenberg/pull/25760#issuecomment-717906169
-			key={ blockClientId }
+			key={ toolbarKey }
 		>
 			<div ref={ toolbarWrapperRef } className={ innerClasses }>
 				{ ! isMultiToolbar &&
