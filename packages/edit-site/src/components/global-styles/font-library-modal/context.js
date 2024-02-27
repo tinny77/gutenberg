@@ -165,7 +165,7 @@ function FontLibraryProvider( { children } ) {
 	// Theme data
 	const { site, currentTheme } = useSelect( ( select ) => {
 		return {
-			site: select( coreStore ).getSite(),
+			site: select( coreStore ).getEntityRecord( 'root', 'site' ),
 			currentTheme: select( coreStore ).getCurrentTheme(),
 		};
 	} );
