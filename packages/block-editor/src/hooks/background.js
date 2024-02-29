@@ -565,7 +565,7 @@ function BackgroundSizePanelItem( {
 	);
 }
 
-export function BackgroundImagePanel( props ) {
+export function BackgroundImagePanel( { clientId, name, setAttributes, settings } ) {
 	const [ backgroundImage, backgroundSize ] = useSettings(
 		'background.backgroundImage',
 		'background.backgroundSize'
@@ -573,16 +573,16 @@ export function BackgroundImagePanel( props ) {
 
 	if (
 		! backgroundImage ||
-		! hasBackgroundSupport( props.name, 'backgroundImage' )
+		! hasBackgroundSupport( name, 'backgroundImage' )
 	) {
 		return null;
 	}
 
 	const showBackgroundSize = !! (
-		backgroundSize && hasBackgroundSupport( props.name, 'backgroundSize' )
+		backgroundSize && hasBackgroundSupport( name, 'backgroundSize' )
 	);
 
-	const defaultControls = getBlockSupport( props.name, [
+	const defaultControls = getBlockSupport( name, [
 		BACKGROUND_SUPPORT_KEY,
 		'__experimentalDefaultControls',
 	] );
@@ -591,12 +591,14 @@ export function BackgroundImagePanel( props ) {
 		<InspectorControls group="background">
 			<BackgroundImagePanelItem
 				isShownByDefault={ defaultControls?.backgroundImage }
-				{ ...props }
+				clientId={ clientId }
+				setAttributes={ setAttributes }
 			/>
 			{ showBackgroundSize && (
 				<BackgroundSizePanelItem
 					isShownByDefault={ defaultControls?.backgroundSize }
-					{ ...props }
+					clientId={ clientId }
+					setAttributes={ setAttributes }
 				/>
 			) }
 		</InspectorControls>
